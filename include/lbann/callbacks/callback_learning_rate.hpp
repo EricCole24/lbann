@@ -300,8 +300,8 @@ class lbann_callback_cyclical_learning_rate : public lbann_callback_learning_rat
 
 
   lbann_callback_cyclical_learning_rate(float base_lr, float max_lr, int stepsize);
-  lbann_callback_cyclical_learning_rate(float base_lr, float max_lr, int stepsize,string mode="triangular2")
-  lbann_callback_cyclical_learning_rate(float base_lr, float max_lr, int stepsize,string mode="exp_range",float gamma)
+  lbann_callback_cyclical_learning_rate(float base_lr, float max_lr, int stepsize,string mode="triangular2");
+  lbann_callback_cyclical_learning_rate(float base_lr, float max_lr, int stepsize,string mode="exp_range",float gamma);
   lbann_callback_cyclical_learning_rate(float base_lr, float max_lr, int stepsize,string mode="exp_range",float gamma, std::unordered_set<weights *> weights_list);
   lbann_callback_cyclical_learning_rate(
     const lbann_callback_cyclical_learning_rate&) = default;
