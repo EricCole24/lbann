@@ -295,14 +295,30 @@ class lbann_callback_optimizerwise_adaptive_learning_rate : public lbann_callbac
 class lbann_callback_cyclical_learning_rate : public lbann_callback_learning_rate {
  public:
  /* 'triangular': Default, linearly increasing then linearly decreasing the learning rate at each cycle.
-  *'triangular2': The same as the triangular policy except that the learning rate difference is cut in half at the end of each cycle. This means the learning rate difference drops after each cycle.
-  *'exp_range': The learning rate varies between the minimum and maximum boundaries and each boundary value declines by an exponential factor*/
+ *   *'triangular2': The same as the triangular policy except that the learning rate difference is cut in half at the end of each cycle. This means the learning rate difference drops after each cycle.
+ *     *'exp_range': The learning rate varies between the minimum and maximum boundaries and each boundary value declines by an exponential factor*/
 
 
-  lbann_callback_cyclical_learning_rate(float base_lr, float max_lr, int stepsize);
-  lbann_callback_cyclical_learning_rate(float base_lr, float max_lr, int stepsize,string mode="triangular2");
-  lbann_callback_cyclical_learning_rate(float base_lr, float max_lr, int stepsize,string mode="exp_range",float gamma);
-  lbann_callback_cyclical_learning_rate(float base_lr, float max_lr, int stepsize,string mode="exp_range",float gamma, std::unordered_set<weights *> weights_list);
+
+
+
+  lbann_callback_cyclical_learning_rate(float base_lr,
+                                        float max_lr,
+                                        int stepsize,
+                                        std::string mode,
+                                        float gamma,
+                                        int epochCounter);
+
+
+  lbann_callback_cyclical_learning_rate(float base_lr,
+                                        float max_lr,
+                                        int stepsize,
+                                        std::string mode,
+                                        float gamma,
+                                        int epochCounter,
+                                        std::unordered_set<weights *> weights_list);
+
+
   lbann_callback_cyclical_learning_rate(
     const lbann_callback_cyclical_learning_rate&) = default;
   lbann_callback_cyclical_learning_rate& operator=(
@@ -310,22 +326,24 @@ class lbann_callback_cyclical_learning_rate : public lbann_callback_learning_rat
   lbann_callback_cyclical_learning_rate* copy() const override {
     return new lbann_callback_cyclical_learning_rate(*this);
   }
-  std::string name() const override { return "cyclical learning rate"; }
+std::string name() const override { return "cyclical learning rate"; }
  protected:
   float global_schedule(model *m) override;
  private:
+//public:
   ///initial learning rate, which is the lower boundary in the cycle
-  float m_base_lr;
+   float m_base_lr;
   ///upper boundary in the cycle
-  float m_max_lr;
+   float m_max_lr;
   ///number of training iterations per half cycle. Authors suggest setting step_size = (2-8) x (training iterations in epoch)
-  int m_stepsize;
+   int m_stepsize;
   ///one of {'triangular', 'triangular2', 'exp_range'}
-  string m_mode;
+   std::string m_mode;
   ///constant in 'exp_range' scaling function, gamma^(cycle iterations)
-  float gamma;
+   float m_gamma;
   ///the number of epochs/steps of training
-  int m_epochCounter
+   int m_epochCounter;
+
 };
 
 
