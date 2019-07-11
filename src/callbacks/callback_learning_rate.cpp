@@ -30,6 +30,7 @@
 #include <limits>
 #include <utility>
 #include <cmath> // std::pow
+#include <algorithm> //std::max
 
 namespace lbann {
 
@@ -284,6 +285,47 @@ float lbann_callback_optimizerwise_adaptive_learning_rate::optimizer_schedule(
   } else {
     return opt.get_learning_rate();
   }
+}
+lbann_callback_cyclical_learning_rate::lbann_callback_cyclical_learning_rate(float base_lr,
+                                                                               float max_lr,
+                                                                               int stepsize,
+                                                                               std::string mode,
+                                                                               float gamma,
+                                                                               int epochCounter)
+    : m_base_lr(base_lr),
+      m_max_lr(max_lr),
+      m_stepsize(stepsize),
+       m_mode(mode),
+      m_epochCounter(epochCounter){}
+  lbann_callback_cyclical_learning_rate::lbann_callback_cyclical_learning_rate(float base_lr,
+                                                                               float max_lr,
+                                                                               int stepsize,
+                                                                               std::string mode ,
+                                                                               float gamma,
+                                                                               int epochCounter,
+                                                                               std::unordered_set<weights *> weights_list)
+    : lbann_callback_learning_rate(weights_list),
+      m_base_lr(base_lr),
+      m_max_lr(max_lr),
+      m_stepsize(stepsize),
+       m_mode(mode),
+      m_epochCounter(epochCounter){}
+ float lbann_callback_cyclical_learning_rate::global_schedule(model *m){
+    float cycle = floor(1+ m_epochCounter/(2 * m_stepsize));
+    int x = abs(m_epochCounter/m_stepsize - 2*cycle + 1);
+
+   if(m_mode == "triangular"){
+      return  m_base_lr +(m_max_lr - m_base_lr)* std::max(0, (1 - x));
+    }
+    else if(m_mode == "triangular2"){
+      return  m_base_lr +(m_max_lr - m_base_lr)* std:: max(0, (1 - x))/std::pow(2, cycle-1);
+    }
+    else if (m_mode == "exp_range"){
+      return  m_base_lr +(m_max_lr - m_base_lr)* std::max(0, (1 - x))* std::pow(m_gamma, m_epochCounter);
+   }
+    else{
+     return 0;
+}
 }
 
 }  // namespace lbann
