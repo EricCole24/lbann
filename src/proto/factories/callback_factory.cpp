@@ -188,6 +188,19 @@ lbann_callback* construct_callback(lbann_comm* comm,
                                                  params.end_lr(),
                                                  selected_weights);
   }
+  if (proto_cb.has_cyclical_learning_rate()) {
+    const auto& params = proto_cb.cyclical_learning_rate();
+    auto&& w = select_from_list<weights>(params.weights(),
+                                                        weights_list);
+    std::unordered_set<weights*> selected_weights(w.begin(), w.end());
+    return  new lbann_callback_cyclical_learning_rate(params.base_lr(),
+                                                         params.max_lr(),
+                                                         (int)params.stepsize(),
+                                                         params.mode(),
+                                                         0.0f, // gamma
+                                                         params.epochcounter(),
+                                                         selected_weights);
+  }
 
   //////////////////////////////////////////////////////////////
   // Mini-batch schedules
