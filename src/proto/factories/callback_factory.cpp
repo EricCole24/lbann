@@ -197,7 +197,7 @@ lbann_callback* construct_callback(lbann_comm* comm,
                                                          params.max_lr(),
                                                          (int)params.stepsize(),
                                                          params.mode(),
-                                                         0.0f, // gamma
+                                                         params.gamma(),
                                                          params.epochcounter(),
                                                          selected_weights);
   }

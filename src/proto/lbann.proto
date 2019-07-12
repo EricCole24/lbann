@@ -446,6 +446,7 @@ message Callback {
    CallbackPerturbDropout perturb_dropout = 39;
    CallbackSaveTopKModels save_topk_models = 40;
    CallbackMixup mixup = 41;
+   CallbackCyclicalLearningRate cyclical_learning_rate = 42;
 }
 
 message CallbackLTFB {
@@ -703,6 +704,15 @@ message CallbackSaveTopKModels {
 message CallbackMixup {
   string layers = 1;
   float alpha = 2;
+}
+message CallbackCyclicalLearningRate{
+string weights=1;
+float base_lr = 2;
+float max_lr = 3;
+int64 stepsize = 4;
+string mode = 5;
+float gamma = 6;
+int64 epochCounter = 7;
 }
 
 //========================================================================
